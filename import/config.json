@@ -1,0 +1,7 @@
+{
+  "mri_path": "/home/maxim/Desktop/zdes_mrt/0",
+  "model_path": "/home/maxim/Desktop/models",
+  "model_name": "model",
+  "histogram_threshold_percent": 13.0,
+  "smooth_kernel": 7
+}
