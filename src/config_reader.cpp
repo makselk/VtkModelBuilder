@@ -45,11 +45,19 @@ std::string ConfigReader::getModelName() {
   return getParamByName("model_name").asString();
 }
 /*****************************************************************************/
-double ConfigReader::getHistogramThreshold() {
-  return getParamByName("histogram_threshold_percent").asDouble();
+double ConfigReader::getThreshold() {
+  return getParamByName("threshold").asDouble();
 }
 /*****************************************************************************/
-double ConfigReader::getSmoothKernel() {
-  return getParamByName("smooth_kernel").asDouble();
+double ConfigReader::getGaussRadius() {
+  return getParamByName("gauss_radius").asDouble();
+}
+/*****************************************************************************/
+double ConfigReader::getGaussDeviation() {
+  return getParamByName("gauss_deviation").asDouble();
+}
+/*****************************************************************************/
+bool ConfigReader::getVisualizateHistogram() {
+  return getParamByName("visualizate_histogram").asBool();
 }
 /*****************************************************************************/

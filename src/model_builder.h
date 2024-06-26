@@ -2,7 +2,9 @@
 #define MODEL_BUILDER
 
 #include <vtkCommand.h>
+#include <vtkImageAccumulate.h>
 #include <vtkImageData.h>
+#include <vtkImageHistogram.h>
 #include <vtkPolyData.h>
 #include <vtkSliderRepresentation.h>
 #include <vtkSliderWidget.h>
@@ -41,28 +43,37 @@ class ModelBuilder {
 
  public:
   vtkSmartPointer<vtkButtonCallback> getBuildButtonCallback() const;
-  vtkSmartPointer<vtkSliderCallback> getSmoothSliderCallback() const;
-  vtkSmartPointer<vtkSliderCallback> getHistSliderCallback() const;
+  vtkSmartPointer<vtkSliderCallback> getRadiusSliderCallback() const;
+  vtkSmartPointer<vtkSliderCallback> getDeviationSliderCallback() const;
+  vtkSmartPointer<vtkSliderCallback> getThresholdSliderCallback() const;
 
  public:
+  double getUpperScalarRange();
+  double getLowerScalarRange();
   vtkSmartPointer<vtkPolyData> getModel();
+  vtkSmartPointer<vtkImageHistogram> getHistogram();
 
  private:
+  void initHistogram();
   void initCallbacks();
   void initParameters();
   void buildModel();
-  void setSmoothKernel(double value);
-  void setHistThreshold(double value);
+  void setGaussRadius(double value);
+  void setGaussDeviation(double value);
+  void setTreshold(double value);
 
  private:
-  double hist_threshold;
-  double smooth_kernel;
+  double gauss_radius;
+  double gauss_deviation;
+  double threshold;
   vtkSmartPointer<vtkImageData> image_data;
+  vtkSmartPointer<vtkImageHistogram> histogram;
   vtkSmartPointer<vtkPolyData> model;
 
   vtkSmartPointer<vtkButtonCallback> build_button_callback;
-  vtkSmartPointer<vtkSliderCallback> smooth_slider_callback;
-  vtkSmartPointer<vtkSliderCallback> hist_slider_callback;
+  vtkSmartPointer<vtkSliderCallback> radius_slider_callback;
+  vtkSmartPointer<vtkSliderCallback> deviation_slider_callback;
+  vtkSmartPointer<vtkSliderCallback> threshold_slider_callback;
 };
 /*****************************************************************************/
 #endif  // MODEL_BULDER

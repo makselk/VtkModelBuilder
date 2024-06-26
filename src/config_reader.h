@@ -18,8 +18,10 @@ class ConfigReader {
   std::string getMriPath();
   std::string getModelPath();
   std::string getModelName();
-  double getHistogramThreshold();
-  double getSmoothKernel();
+  double getThreshold();
+  double getGaussRadius();
+  double getGaussDeviation();
+  bool getVisualizateHistogram();
 
  private:
   inline static ConfigReader* reader = nullptr;

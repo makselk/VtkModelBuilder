@@ -37,8 +37,9 @@ class SceneProvider {
   vtkSmartPointer<vtkPolyDataMapper> mapper;
   vtkSmartPointer<vtkActor> actor;
 
-  vtkSmartPointer<vtkSliderWidget> hist_widget;
-  vtkSmartPointer<vtkSliderWidget> smooth_widget;
+  vtkSmartPointer<vtkSliderWidget> radius_widget;
+  vtkSmartPointer<vtkSliderWidget> deviation_widget;
+  vtkSmartPointer<vtkSliderWidget> threshold_widget;
   vtkSmartPointer<vtkButtonWidget> button_widget;
 };
 /*****************************************************************************/
