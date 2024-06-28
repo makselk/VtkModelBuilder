@@ -43,9 +43,11 @@ class ModelBuilder {
 
  public:
   vtkSmartPointer<vtkButtonCallback> getBuildButtonCallback() const;
+  vtkSmartPointer<vtkButtonCallback> getSaveButtonCallback() const;
   vtkSmartPointer<vtkSliderCallback> getRadiusSliderCallback() const;
   vtkSmartPointer<vtkSliderCallback> getDeviationSliderCallback() const;
   vtkSmartPointer<vtkSliderCallback> getThresholdSliderCallback() const;
+  vtkSmartPointer<vtkSliderCallback> getMorphSliderCallback() const;
 
  public:
   double getUpperScalarRange();
@@ -57,12 +59,15 @@ class ModelBuilder {
   void initHistogram();
   void initCallbacks();
   void initParameters();
+  void saveModel();
   void buildModel();
+  void setMorphRadius(double value);
   void setGaussRadius(double value);
   void setGaussDeviation(double value);
   void setTreshold(double value);
 
  private:
+  double morph_radius;
   double gauss_radius;
   double gauss_deviation;
   double threshold;
@@ -70,7 +75,9 @@ class ModelBuilder {
   vtkSmartPointer<vtkImageHistogram> histogram;
   vtkSmartPointer<vtkPolyData> model;
 
+  vtkSmartPointer<vtkButtonCallback> save_button_callback;
   vtkSmartPointer<vtkButtonCallback> build_button_callback;
+  vtkSmartPointer<vtkSliderCallback> morph_slider_callback;
   vtkSmartPointer<vtkSliderCallback> radius_slider_callback;
   vtkSmartPointer<vtkSliderCallback> deviation_slider_callback;
   vtkSmartPointer<vtkSliderCallback> threshold_slider_callback;

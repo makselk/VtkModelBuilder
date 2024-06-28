@@ -26,6 +26,8 @@ class SceneProvider {
  public:
   void start();
   void setPolyData(vtkSmartPointer<vtkPolyData> polydata);
+  void calculateButtonBounds(double x_pos, double y_pos, double size,
+                             double* bounds);
 
  private:
   inline static SceneProvider* provider = nullptr;
@@ -37,10 +39,12 @@ class SceneProvider {
   vtkSmartPointer<vtkPolyDataMapper> mapper;
   vtkSmartPointer<vtkActor> actor;
 
+  vtkSmartPointer<vtkSliderWidget> morph_widget;
   vtkSmartPointer<vtkSliderWidget> radius_widget;
   vtkSmartPointer<vtkSliderWidget> deviation_widget;
   vtkSmartPointer<vtkSliderWidget> threshold_widget;
-  vtkSmartPointer<vtkButtonWidget> button_widget;
+  vtkSmartPointer<vtkButtonWidget> build_widget;
+  vtkSmartPointer<vtkButtonWidget> save_widget;
 };
 /*****************************************************************************/
 #endif  // SCENE_PROVIDER

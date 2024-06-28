@@ -18,6 +18,7 @@ class ConfigReader {
   std::string getMriPath();
   std::string getModelPath();
   std::string getModelName();
+  double getMorphRadius();
   double getThreshold();
   double getGaussRadius();
   double getGaussDeviation();

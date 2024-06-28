@@ -45,6 +45,10 @@ std::string ConfigReader::getModelName() {
   return getParamByName("model_name").asString();
 }
 /*****************************************************************************/
+double ConfigReader::getMorphRadius() {
+  return getParamByName("morph_radius").asDouble();
+}
+/*****************************************************************************/
 double ConfigReader::getThreshold() {
   return getParamByName("threshold").asDouble();
 }

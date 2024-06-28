@@ -1,7 +1,8 @@
 {
   "mri_path": "/home/maxim/Desktop/zdes_mrt/0",
-  "model_path": "/home/maxim/Desktop/models",
+  "model_path": "/home/maxim/models",
   "model_name": "model",
+  "morph_radius": 5,
   "threshold": 10,
   "gauss_radius": 5,
   "gauss_deviation": 2,
