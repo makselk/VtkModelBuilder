@@ -97,7 +97,7 @@ void DcmReader::initImageData() {
   vtkNew<vtkImageReslice> reslice;
   reslice->SetInputData(reader->GetOutput());
   reslice->SetResliceTransform(transform);
-  // reslice->SetInterpolationModeToLinear();
+  reslice->SetInterpolationModeToLinear();
   reslice->AutoCropOutputOn();
   reslice->Update();
 

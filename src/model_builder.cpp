@@ -204,31 +204,44 @@ void ModelBuilder::saveModel() {
 void ModelBuilder::buildModel() {
   model = vtkSmartPointer<vtkPolyData>::New();
 
+  vtkNew<vtkImageData> data;
+  data->DeepCopy(image_data);
+
+  vtkNew<vtkImageThreshold> thresh_filter;
+  thresh_filter->SetInputData(data);
+  thresh_filter->ThresholdByLower(threshold);
+  thresh_filter->SetInValue(1024);
+  thresh_filter->SetOutValue(0);
+  thresh_filter->Update();
+
+  // Вроде и полезнео, но профита не вижу. Аккуратно, модель может уезжать от
+  // таких движений
+  // vtkNew<vtkImageOpenClose3D> morph_open;
+  // morph_open->SetInputData(thresh_filter->GetOutput());
+  // morph_open->SetOpenValue(1024);
+  // morph_open->SetCloseValue(0);
+  // morph_open->SetKernelSize(morph_radius, morph_radius, morph_radius);
+  // morph_open->Update();
+  //
+  // vtkNew<vtkImageOpenClose3D> morph_close;
+  // morph_close->SetInputData(morph_open->GetOutput());
+  // morph_close->SetOpenValue(0);
+  // morph_close->SetCloseValue(1024);
+  // morph_close->SetKernelSize(morph_radius, morph_radius, morph_radius);
+  // morph_close->Update();
+
   vtkNew<vtkImageGaussianSmooth> gauss;
-  gauss->SetInputData(image_data);
+  gauss->SetInputData(thresh_filter->GetOutput());
+  gauss->SetDimensionality(3);
   gauss->SetRadiusFactor(gauss_radius);
   gauss->SetStandardDeviation(gauss_deviation);
   gauss->Update();
 
-  vtkNew<vtkImageThreshold> thresh_filter;
-  thresh_filter->SetInputData(gauss->GetOutput());
-  thresh_filter->ThresholdByLower(threshold);
-  thresh_filter->SetInValue(1);
-  thresh_filter->SetOutValue(0);
-  thresh_filter->Update();
-
-  vtkNew<vtkImageOpenClose3D> morph_close;
-  morph_close->SetInputData(thresh_filter->GetOutput());
-  morph_close->SetOpenValue(1);
-  morph_close->SetCloseValue(0);
-  morph_close->SetKernelSize(morph_radius, morph_radius, morph_radius);
-  morph_close->Update();
-
   vtkNew<vtkFlyingEdges3D> flying_edges;
-  flying_edges->SetInputData(morph_close->GetOutput());
+  flying_edges->SetInputData(gauss->GetOutput());
   flying_edges->ComputeNormalsOn();
   flying_edges->ComputeScalarsOff();
-  flying_edges->SetValue(0, 1);
+  flying_edges->SetValue(0, 512);
   flying_edges->Update();
 
   vtkNew<vtkPolyDataConnectivityFilter> confilter;
