@@ -2,6 +2,7 @@
 
 #include <vtkDICOMMetaData.h>
 #include <vtkDICOMReader.h>
+#include <vtkImageResample.h>
 #include <vtkImageReslice.h>
 #include <vtkMatrix4x4.h>
 #include <vtkStringArray.h>
@@ -101,6 +102,42 @@ void DcmReader::initImageData() {
   reslice->AutoCropOutputOn();
   reslice->Update();
 
-  image_data = reslice->GetOutput();
+  int dims_src[3];
+  reslice->GetOutput()->GetDimensions(dims_src);
+  std::cout << "dims_src: [" << dims_src[0] << ", " << dims_src[1] << ", "
+            << dims_src[2] << "]" << std::endl;
+
+  double bounds_src[6];
+  reslice->GetOutput()->GetBounds(bounds_src);
+  std::cout << "bounds_src: [" << bounds_src[0] << ", " << bounds_src[1] << ", "
+            << bounds_src[2] << "," << bounds_src[3] << ", " << bounds_src[4]
+            << ", " << bounds_src[5] << "]" << std::endl;
+
+  int max_dim = *std::max(dims_src + 0, dims_src + 2);
+  double reduction_coef = 255.0 / static_cast<double>(max_dim);
+
+  std::cout << "reduction coef: " << reduction_coef << std::endl;
+
+  vtkNew<vtkImageResample> resample;
+  resample->SetInputData(reslice->GetOutput());
+  resample->SetAxisMagnificationFactor(0, reduction_coef);
+  resample->SetAxisMagnificationFactor(1, reduction_coef);
+  resample->SetAxisMagnificationFactor(2, reduction_coef);
+  resample->SetInterpolationModeToLinear();
+  resample->Update();
+
+  int dims_resample[3];
+  resample->GetOutput()->GetDimensions(dims_resample);
+  std::cout << "dims_resample: [" << dims_resample[0] << ", "
+            << dims_resample[1] << ", " << dims_resample[2] << "]" << std::endl;
+
+  double bounds_resample[6];
+  resample->GetOutput()->GetBounds(bounds_resample);
+  std::cout << "bounds_resample: [" << bounds_resample[0] << ", "
+            << bounds_resample[1] << ", " << bounds_resample[2] << ","
+            << bounds_resample[3] << ", " << bounds_resample[4] << ", "
+            << bounds_resample[5] << "]" << std::endl;
+
+  image_data = resample->GetOutput();
 }
 /*****************************************************************************/

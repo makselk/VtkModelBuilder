@@ -1,12 +1,15 @@
 #include "model_builder.h"
 
+#include <vtkCleanPolyData.h>
 #include <vtkFlyingEdges3D.h>
+#include <vtkHull.h>
 #include <vtkImageGaussianSmooth.h>
 #include <vtkImageOpenClose3D.h>
 #include <vtkImageThreshold.h>
 #include <vtkPLYWriter.h>
 #include <vtkPointData.h>
 #include <vtkPolyDataConnectivityFilter.h>
+#include <vtkSTLWriter.h>
 
 #include <filesystem>
 
@@ -199,6 +202,12 @@ void ModelBuilder::saveModel() {
   writer->SetFileName(filepath.c_str());
   writer->SetInputData(model);
   writer->Update();
+
+  std::string filepath_stl = folder + "/" + name + ".stl";
+  vtkNew<vtkSTLWriter> writer_stl;
+  writer_stl->SetFileName(filepath_stl.c_str());
+  writer_stl->SetInputData(model);
+  writer_stl->Update();
 }
 /*****************************************************************************/
 void ModelBuilder::buildModel() {
@@ -249,7 +258,19 @@ void ModelBuilder::buildModel() {
   confilter->SetExtractionModeToLargestRegion();
   confilter->Update();
 
-  model = confilter->GetOutput();
+  vtkNew<vtkCleanPolyData> cleaner;
+  cleaner->SetInputData(confilter->GetOutput());
+  cleaner->Update();
+
+  vtkNew<vtkHull> convex_hull;
+  convex_hull->SetInputConnection(cleaner->GetOutputPort());
+  convex_hull->AddCubeFacePlanes();
+  convex_hull->AddRecursiveSpherePlanes(5);
+  convex_hull->Update();
+
+  model = convex_hull->GetOutput();
+  // model = cleaner->GetOutput();
+  std::cout << model->GetNumberOfPolys() << std::endl;
 }
 /*****************************************************************************/
 void ModelBuilder::setMorphRadius(double value) { morph_radius = value; }
